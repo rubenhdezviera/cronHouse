@@ -2,8 +2,11 @@ var CronJob = require('cron').CronJob;
 var jsonfile = require('jsonfile');
 var request = require('request-promise');
 var cheerio = require('cheerio'); //HTML jQuery-like DOM parser
+var nodemailer = require('nodemailer');
 
+var PROFILE_CONFIG_FILE = './config_dev.json';
 var FILE_CONFIG_IDEALISTA = './config_idealista.json';
+var PROFILE_CONFIG = jsonfile.readFileSync(PROFILE_CONFIG_FILE);
 var config_idealista = jsonfile.readFileSync(FILE_CONFIG_IDEALISTA);
 var OUTPUT_JSON_FILE = config_idealista.output_json_file; 
 var CHROME_UA = {'User-Agent': 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'};
@@ -14,13 +17,22 @@ var request_options = {
   },
   headers: CHROME_UA
 };
-
+var transporter = nodemailer.createTransport({
+  service: PROFILE_CONFIG.mail.service,
+  auth: PROFILE_CONFIG.mail.auth
+});
+const mailOptions = {
+  from: PROFILE_CONFIG.mail.auth.user, // sender address
+  to: PROFILE_CONFIG.mail.auth.user, // list of receivers
+  subject: 'test subject', // Subject line
+  html: 'testing this'// plain text body
+};
 
 var num_pages;
 var MAX_PAGES;
 var num_items;
 
-new CronJob('11 03 * * * *', function () {
+new CronJob('59 25 * * * *', function () {
   console.log('\n\nIdealista JOB started @ ' + new Date() + '\n\nScrapping...');
 
   num_pages = 0;
@@ -69,8 +81,16 @@ function scrapIdealista(init_url) {
       
       if( !items[item['id_idealista']]  && item['price'] > 0 /* && item['price'] < 500 */) {
 
-        items[item['id_idealista']] = item;
-        num_items++;
+        mailOptions.html = JSON.stringify(item);
+        transporter.sendMail(mailOptions, function (err, info) {
+          if(err)
+            console.log(err)
+          else { //Sólo añadimos items si se envía el correo ;-)
+            items[item['id_idealista']] = item;
+            num_items++;
+          }
+       });
+
         //console.log('Added: ' + JSON.stringify(item));
       } /*else {
         console.log('repeated...');
@@ -79,7 +99,6 @@ function scrapIdealista(init_url) {
     });
 
     jsonfile.writeFileSync(OUTPUT_JSON_FILE, items);
-    
     //console.log('\n\nPágina ' + ++num_pages + ' scrapped!');
 
     var next_url = $('.icon-arrow-right-after').attr('href');
