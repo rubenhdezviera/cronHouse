@@ -4,7 +4,7 @@ var request = require('request-promise');
 var cheerio = require('cheerio'); //HTML jQuery-like DOM parser
 var nodemailer = require('nodemailer');
 
-var PROFILE_CONFIG_FILE = './config_dev.json';
+var PROFILE_CONFIG_FILE = './config_profile.json';
 var FILE_CONFIG_IDEALISTA = './config_idealista.json';
 var PROFILE_CONFIG = jsonfile.readFileSync(PROFILE_CONFIG_FILE);
 var config_idealista = jsonfile.readFileSync(FILE_CONFIG_IDEALISTA);
