@@ -18,11 +18,13 @@ var request_options = {
 
 var num_pages;
 var MAX_PAGES;
+var num_items;
 
-new CronJob('*/7 * * * * *', function () {
-  console.log('Idealista JOB started @ ' + new Date());
+new CronJob('11 03 * * * *', function () {
+  console.log('\n\nIdealista JOB started @ ' + new Date() + '\n\nScrapping...');
 
   num_pages = 0;
+  num_items = 0;
   MAX_PAGES = config_idealista.max_pages;
   scrapIdealista(config_idealista.init_url);
 
@@ -38,7 +40,7 @@ function scrapIdealista(init_url) {
       items = jsonfile.readFileSync(OUTPUT_JSON_FILE);
     }
     catch(error) {
-      console.log('No existe fichero ' + OUTPUT_JSON_FILE +' -> Se creará uno nuevo' ) ;
+      console.log('\n\nNo existe fichero ' + OUTPUT_JSON_FILE +' -> Se creará uno nuevo' ) ;
       items = {};
     }
          
@@ -68,6 +70,7 @@ function scrapIdealista(init_url) {
       if( !items[item['id_idealista']]  && item['price'] > 0 /* && item['price'] < 500 */) {
 
         items[item['id_idealista']] = item;
+        num_items++;
         //console.log('Added: ' + JSON.stringify(item));
       } /*else {
         console.log('repeated...');
@@ -77,16 +80,16 @@ function scrapIdealista(init_url) {
 
     jsonfile.writeFileSync(OUTPUT_JSON_FILE, items);
     
-    console.log('Página ' + ++num_pages + ' scrapped!');
+    //console.log('\n\nPágina ' + ++num_pages + ' scrapped!');
 
     var next_url = $('.icon-arrow-right-after').attr('href');
     next_url = next_url != undefined ? 'https://www.idealista.com' + next_url : '';
     
     if(next_url != '' && num_pages < MAX_PAGES) {
-      console.log('NEXT URL: ' + next_url);
+      //console.log('NEXT URL: ' + next_url);
       scrapIdealista(next_url);
     } else {
-      console.log('Done scrapping Idealista!');
+      console.log('\n\nDone scrapping Idealista!\n\nTotal Items Added: ' + num_items + '\n\nTotal Items: ' + Object.keys(items).length);
     }
   });
 }
