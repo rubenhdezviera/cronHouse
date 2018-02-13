@@ -32,8 +32,8 @@ var MAX_PAGES;
 var new_items;
 /* /GLOBAL VARS */
 
-//Run each 12 minutes
-new CronJob('0 */12 * * * *', function () {
+//Run each 4 minutes
+new CronJob('0 */4 * * * *', function () {
   console.log('\n\nIdealista JOB started @ ' + new Date() + '\n\nScrapping...');
 
   num_pages = 0;
@@ -111,19 +111,39 @@ function scrapIdealista(init_url) {
     } else {
       var total_items = Object.keys(items).length;
       var total_new_items = new_items.length;
-      console.log('\n\nDone scrapping Idealista!\n\nTotal Items Added: ' + total_new_items + '\n\nTotal Items: ' + total_items);
 
-       new_items.forEach(function(item){
-        transporter.sendMail({
-          from: PROFILE_CONFIG.mail.auth.user, // sender address
-          to: PROFILE_CONFIG.mail.destinataries, // list of receivers
-          subject: 'watchCat: ' + item.price + '€/mes | ' + item.title, // Subject line
-          html: loadEmailTemplate(item)// plain text body
-        }, function (err, info) {
-          if(err) {
-            console.log(err);
+      new_items.forEach(function(item) {
+        var destinataries = [];
+        PROFILE_CONFIG.mail.destinataries["Idealista"].forEach(function(user) {
+          var filters = user.filters;
+          var passes = true;
+          for (var property in filters) {
+            if (filters.hasOwnProperty(property)) {
+              if(passes) {
+                passes = eval(item[property] + filters[property]);
+              }
+            }
+          }
+          if (passes) {
+            destinataries.push(user.email);
           }
         });
+
+        if(destinataries.length > 0) {
+          transporter.sendMail({
+            from: PROFILE_CONFIG.mail.auth.user,
+            to: destinataries.toString(),
+            subject: 'watchCat: ' + item.price + '€/mes | ' + item.title,
+            html: loadEmailTemplate(item)
+          }, function (err, info) {
+            if(err) {
+              console.log(err);
+            }
+            console.log('\n\nDone scrapping Idealista @ ' + new Date() + '\n\nTotal Items Added: ' + total_new_items + '\n\nTotal Items: ' + total_items);
+          });
+        } else {
+          console.log('\n\nDone scrapping Idealista @ ' + new Date() + '\n\nTotal Items Added: ' + total_new_items + '\n\nTotal Items: ' + total_items);
+        }
       });
     }
   });
