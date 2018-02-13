@@ -32,7 +32,8 @@ var MAX_PAGES;
 var new_items;
 /* /GLOBAL VARS */
 
-new CronJob('59 03 * * * *', function () {
+//Run each 12 minutes
+new CronJob('0 */12 * * * *', function () {
   console.log('\n\nIdealista JOB started @ ' + new Date() + '\n\nScrapping...');
 
   num_pages = 0;
