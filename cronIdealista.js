@@ -139,12 +139,10 @@ function scrapIdealista(init_url) {
             if(err) {
               console.log(err);
             }
-            console.log('\n\nDone scrapping Idealista @ ' + new Date() + '\n\nTotal Items Added: ' + total_new_items + '\n\nTotal Items: ' + total_items);
           });
-        } else {
-          console.log('\n\nDone scrapping Idealista @ ' + new Date() + '\n\nTotal Items Added: ' + total_new_items + '\n\nTotal Items: ' + total_items);
         }
       });
+      console.log('\n\nDone scrapping Idealista @ ' + new Date() + '\n\nTotal Items Added: ' + total_new_items + '\n\nTotal Items: ' + total_items);
     }
   });
 }
