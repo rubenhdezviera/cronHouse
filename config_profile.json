@@ -4,6 +4,7 @@
         "auth": {
             "user": "<YOUR_EMAIL>@gmail.com",
             "pass": "<YOUR_PASSWORD>"
-        }
+        },
+        "destinataries":"email1@example.com, email2@example.com"
     }
 }

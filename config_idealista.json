@@ -2,6 +2,5 @@
     "name":"Idealista",
     "init_url":"https://www.idealista.com/alquiler-viviendas/las-palmas-de-gran-canaria-las-palmas/?ordenado-por=fecha-publicacion-desc",
     "max_pages": 5,
-    "output_json_file": "items_idealista_laspalmas.json",
-    "mail_to":"FUTURE_MAIL_TO_NOTIFY"
+    "output_json_file": "items_idealista_laspalmas.json"
 }
