@@ -12,9 +12,10 @@ var FILE_CONFIG_IDEALISTA = './config_idealista.json';
 
 /* GLOBAL VARS */
 var PROFILE_CONFIG = jsonfile.readFileSync(PROFILE_CONFIG_FILE);
-var config_idealista = jsonfile.readFileSync(FILE_CONFIG_IDEALISTA);
-var OUTPUT_JSON_FILE = config_idealista.output_json_file;
+var CONFIG_IDEALISTA = jsonfile.readFileSync(FILE_CONFIG_IDEALISTA);
+var OUTPUT_JSON_FILE = CONFIG_IDEALISTA.output_json_file;
 var CHROME_UA = { 'User-Agent': 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36' };
+
 var request_options = {
   url: '',
   transform: function (body) {
@@ -26,20 +27,16 @@ var transporter = nodemailer.createTransport({
   service: PROFILE_CONFIG.mail.service,
   auth: PROFILE_CONFIG.mail.auth
 });
-
-var num_pages;
-var MAX_PAGES;
-var new_items;
 /* /GLOBAL VARS */
 
 //Run each 4 minutes
 new CronJob('0 */4 * * * *', function () {
   console.log('\n\nIdealista JOB started @ ' + new Date() + '\n\nScrapping...');
 
-  num_pages = 0;
-  new_items = [];
-  MAX_PAGES = config_idealista.max_pages;
-  scrapIdealista(config_idealista.init_url);
+  var num_pages = 0;
+  var new_items = [];
+  var max_pages = CONFIG_IDEALISTA.max_pages;
+  scrapIdealista(CONFIG_IDEALISTA.init_url);
 
 }, null, true, 'Atlantic/Canary');
 
@@ -99,7 +96,7 @@ function scrapIdealista(init_url) {
     var next_url = $('.icon-arrow-right-after').attr('href');
     next_url = next_url != undefined ? 'https://www.idealista.com' + next_url : '';
 
-    if (next_url != '' && num_pages < MAX_PAGES) {
+    if (next_url != '' && num_pages < max_pages) {
       scrapIdealista(next_url);
 
     } else {
