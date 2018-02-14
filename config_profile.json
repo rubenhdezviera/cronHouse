@@ -1,27 +1,30 @@
 {
-    "mail":{
-        "service":"gmail",
+    "mail": {
+        "service": "gmail",
         "auth": {
             "user": "<YOUR_EMAIL>@gmail.com",
             "pass": "<YOUR_PASSWORD>"
         },
         "destinataries": {
-            "Idealista": [{
-                "name": "Joe Blogs",
-                "email": "example1@gmail.com",
-                "filters": {
-                    "price": "< 601",
-                    "m2": "> 40",
-                    "num_habs": "> 1"
+            "Idealista": [
+                {
+                    "name": "Joe Blogs",
+                    "email": "example1@gmail.com",
+                    "filters": {
+                        "price": "< 601",
+                        "m2": "> 40",
+                        "num_habs": "> 1"
+                    }
+                },
+                {
+                    "name": "Joe'e friend",
+                    "email": "example2@gmail.com",
+                    "filters": {
+                        "price": "< 601",
+                        "m2": "> 30"
+                    }
                 }
-            }, {
-                "name": "Joe'e friend",
-                "email": "example2@gmail.com",
-                "filters": {
-                    "price": "< 601",
-                    "m2": "> 30"
-                }
-            }]
+            ]
         }
     }
 }

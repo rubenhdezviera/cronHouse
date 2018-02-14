@@ -13,8 +13,8 @@ var FILE_CONFIG_IDEALISTA = './config_idealista.json';
 /* GLOBAL VARS */
 var PROFILE_CONFIG = jsonfile.readFileSync(PROFILE_CONFIG_FILE);
 var config_idealista = jsonfile.readFileSync(FILE_CONFIG_IDEALISTA);
-var OUTPUT_JSON_FILE = config_idealista.output_json_file; 
-var CHROME_UA = {'User-Agent': 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'};
+var OUTPUT_JSON_FILE = config_idealista.output_json_file;
+var CHROME_UA = { 'User-Agent': 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36' };
 var request_options = {
   url: '',
   transform: function (body) {
@@ -47,7 +47,7 @@ function loadEmailTemplate(item) {
   var template = fs.readFileSync('email_template.html', "utf8");
   for (var property in item) {
     if (item.hasOwnProperty(property)) {
-      template = template.replace(new RegExp('\{\{'+property+'\}\}','g'), item[property]);
+      template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), item[property]);
     }
   }
   return template;
@@ -56,23 +56,20 @@ function loadEmailTemplate(item) {
 function scrapIdealista(init_url) {
 
   request_options.url = init_url;
-
   request(request_options).then(function ($) {
     var items;
     try {
       items = jsonfile.readFileSync(OUTPUT_JSON_FILE);
-    }
-    catch(error) {
-      console.log('\n\nNo existe fichero ' + OUTPUT_JSON_FILE +' -> Se creará uno nuevo' ) ;
+    } catch (error) {
+      console.log('\n\nNo existe fichero ' + OUTPUT_JSON_FILE + ' -> Se creará uno nuevo');
       items = {};
     }
-         
+
     $('article').each(function (i) {
       /*if(i==0){
-        console.log('--CODE-- ' + $(this).find('.item-detail').eq(1).html() + '--');
+        console.log('--HTML ITEM CODE-- ' + $(this).find('.item-detail').eq(1).html() + '--');
       }*/
       var item = {};
-
       item['id_idealista'] = $(this).children('.item').attr('data-adid');
       item['title'] = $(this).find('.item-link').text();
       item['link'] = 'https://www.idealista.com' + $(this).find('.item-link').attr('href');
@@ -89,37 +86,34 @@ function scrapIdealista(init_url) {
       }).text();
       item['m2'] = item['m2'] != '' ? parseInt(item['m2'].substr(0, item['m2'].indexOf(' '))) : 0;
       item['date_added'] = new Date().getTime();
-      
-      if( !items[item['id_idealista']]  && item['price'] > 0 /* && item['price'] < 500 */) {
+
+      if (!items[item['id_idealista']] && item['price'] > 0 /* && item['price'] < 500 */) {
         items[item['id_idealista']] = item;
         new_items.push(item);
         //console.log('Added: ' + JSON.stringify(item));
-      }/*  else {
-        console.log('repeated...');
-      } */
+      }
     });
 
     jsonfile.writeFileSync(OUTPUT_JSON_FILE, items);
-    //console.log('\n\nPágina ' + ++num_pages + ' scrapped!');
 
     var next_url = $('.icon-arrow-right-after').attr('href');
     next_url = next_url != undefined ? 'https://www.idealista.com' + next_url : '';
-    
-    if(next_url != '' && num_pages < MAX_PAGES) {
-      //console.log('NEXT URL: ' + next_url);
+
+    if (next_url != '' && num_pages < MAX_PAGES) {
       scrapIdealista(next_url);
+
     } else {
       var total_items = Object.keys(items).length;
       var total_new_items = new_items.length;
 
-      new_items.forEach(function(item) {
+      new_items.forEach(function (item) {
         var destinataries = [];
-        PROFILE_CONFIG.mail.destinataries["Idealista"].forEach(function(user) {
+        PROFILE_CONFIG.mail.destinataries["Idealista"].forEach(function (user) {
           var filters = user.filters;
           var passes = true;
           for (var property in filters) {
             if (filters.hasOwnProperty(property)) {
-              if(passes) {
+              if (passes) {
                 passes = eval(item[property] + filters[property]);
               }
             }
@@ -129,16 +123,14 @@ function scrapIdealista(init_url) {
           }
         });
 
-        if(destinataries.length > 0) {
+        if (destinataries.length > 0) {
           transporter.sendMail({
             from: PROFILE_CONFIG.mail.auth.user,
             to: destinataries.toString(),
             subject: 'watchCat: ' + item.price + '€/mes | ' + item.title,
             html: loadEmailTemplate(item)
           }, function (err, info) {
-            if(err) {
-              console.log(err);
-            }
+            if (err) { console.log(err); }
           });
         }
       });
