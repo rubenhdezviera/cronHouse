@@ -27,15 +27,19 @@ var transporter = nodemailer.createTransport({
   service: PROFILE_CONFIG.mail.service,
   auth: PROFILE_CONFIG.mail.auth
 });
+
+var num_pages;
+var new_items;
+var max_pages;
 /* /GLOBAL VARS */
 
 //Run each 4 minutes
 new CronJob('0 */4 * * * *', function () {
   console.log('\n\nIdealista JOB started @ ' + new Date() + '\n\nScrapping...');
 
-  var num_pages = 0;
-  var new_items = [];
-  var max_pages = CONFIG_IDEALISTA.max_pages;
+  num_pages = 0;
+  new_items = [];
+  max_pages = CONFIG_IDEALISTA.max_pages;
   scrapIdealista(CONFIG_IDEALISTA.init_url);
 
 }, null, true, 'Atlantic/Canary');
