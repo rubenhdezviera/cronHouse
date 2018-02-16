@@ -1,5 +1,5 @@
 *.prod.json
-items_idealista_laspalmas.json
+items_*.json
 # Created by https://www.gitignore.io/api/node
 
 ### Node ###
