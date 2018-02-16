@@ -14,7 +14,7 @@
             }
         },
         {
-            "name": "Joe'e friend",
+            "name": "Joe's friend",
             "email": "example2@gmail.com",
             "filters": {
                 "price": "< 601",
