@@ -1,0 +1,41 @@
+[{
+    "name": "Idealista JOB 1",
+    "init_url": "https://www.idealista.com/alquiler-viviendas/las-palmas-de-gran-canaria-las-palmas/con-publicado_ultimas-24-horas/?ordenado-por=fecha-publicacion-desc",
+    "max_pages": 5,
+    "output_json_file": "items_idealista_job1.json",
+    "destinataries": [
+        {
+            "name": "Joe Blogs",
+            "email": "example1@gmail.com",
+            "filters": {
+                "price": "< 601",
+                "m2": "> 40",
+                "num_habs": "> 1"
+            }
+        },
+        {
+            "name": "Joe'e friend",
+            "email": "example2@gmail.com",
+            "filters": {
+                "price": "< 601",
+                "m2": "> 30"
+            }
+        }
+    ]
+}, {
+    "name": "Idealista JOB 2",
+    "init_url": "https://www.idealista.com/alquiler-viviendas/aguimes-las-palmas/?ordenado-por=fecha-publicacion-desc",
+    "max_pages": 5,
+    "output_json_file": "items_idealista_job2.json",
+    "destinataries": [
+        {
+            "name": "John Smith",
+            "email": "example3@gmail.com",
+            "filters": {
+                "price": "< 601",
+                "m2": "> 40",
+                "num_habs": "> 1"
+            }
+        }
+    ]
+}]
