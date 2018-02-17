@@ -1,5 +1,5 @@
 # Requirements
-    [npm](https://www.npmjs.com/) and [NodeJS](https://nodejs.org/en/). Get both [here](https://nodejs.org/en/download/).
+[npm](https://www.npmjs.com/) and [NodeJS](https://nodejs.org/en/). Get both [here](https://nodejs.org/en/download/)!
 
 # Get the repo
     git clone https://github.com/yeikiu/cronIdealista.git
