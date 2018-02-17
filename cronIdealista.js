@@ -84,8 +84,9 @@ function scrapIdealista(JOB) {
 
     var next_url = $('.icon-arrow-right-after').attr('href');
     next_url = next_url != undefined ? IDEALISTA_BASE_URL + next_url : '';
+    JOB.num_pages++;
 
-    if (next_url != '' && ++JOB.num_pages < JOB.max_pages) {
+    if (next_url != '' && JOB.num_pages < JOB.max_pages) {
       JOB.request_options.url = next_url;
       scrapIdealista(JOB);
 
