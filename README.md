@@ -60,11 +60,13 @@ I'm using Gmail as a provider since it was extremly easy to configure my account
             }
         ]
     }]
+
 This file is an array of Jobs to be iterated by the cron on each execution. Each job has the following fields:
+
 | Key | Definition |
 |--|--|
 | **name** | Will identify the job in the console output and the email alerts subject |
-| **init_url** | The first Idealista's page to be visited by the scrapper. For example I use https://www.idealista.com/alquiler-viviendas/las-palmas-de-gran-canaria-las-palmas/con-publicado_ultimas-24-horas/?ordenado-por=fecha-publicacion-desc to be updated with the new flats in my city Las Palmas de Gran Canaria. Visit the link and notice the web must show in it's list view, not the map. The next pages to visit will be identified if there is a 'next page' button in the pager of the list. |
+| **init_url** | The first Idealista's page to be visited by the scrapper. For example I use to be updated with the new flats in my city Las Palmas de Gran Canaria. Visit the link and notice the web must show in it's list view, not the map. The next pages to visit will be identified if there is a 'next page' button in the pager of the list. |
 | **max_pages** | Limit the number of pages to be visited. Don't be greedy ;) |
 | **output_json_file** | This file will be generated with all the flats scrapped during the job. The first time the job runs it won't notify the configured destinataries since we are looking for fresh additions. After the second run, when it detects a new flat to insert in the file, it will notify those destinataries matching their filters criteria. |
 | **destinataries** | Here you can set any number of destinataries interested in the alerts generated. Each destinatary has a **name** and an **email** field. The **filters** field must exist but it's not mandatory to fill it with any data. |
