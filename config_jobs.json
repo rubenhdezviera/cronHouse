@@ -10,7 +10,7 @@
             "filters": {
                 "price": "< 601",
                 "m2": "> 40",
-                "num_habs": "> 1"
+                "num_rooms": "> 1"
             }
         },
         {
@@ -34,7 +34,7 @@
             "filters": {
                 "price": "< 601",
                 "m2": "> 40",
-                "num_habs": "> 1"
+                "num_rooms": "> 1"
             }
         }
     ]

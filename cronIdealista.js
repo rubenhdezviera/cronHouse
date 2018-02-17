@@ -63,10 +63,10 @@ function scrapIdealista(JOB) {
       item['price'] = item['price'].substr(0, item['price'].search('€/mes')).replace('.', '');
       item['price'] = item['price'] != '' ? parseInt(item['price']) : 0;
       item['description'] = $(this).find('.item-description').text();
-      item['num_habs'] = $(this).find('.item-detail').filter(function () {
+      item['num_rooms'] = $(this).find('.item-detail').filter(function () {
         return $(this).html().search('<small>hab.</small>') > -1;
       }).text().substr(0, 1);
-      item['num_habs'] = item['num_habs'] != '' ? parseInt(item['num_habs']) : 0;
+      item['num_rooms'] = item['num_rooms'] != '' ? parseInt(item['num_rooms']) : 0;
       item['m2'] = $(this).find('.item-detail').filter(function () {
         return $(this).html().search('<small>m&#xB2;</small>') > -1;
       }).text();
