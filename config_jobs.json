@@ -1,12 +1,12 @@
 [{
-    "name": "Idealista JOB 1",
+    "name": "Idealista JOB Las Palmas",
     "init_url": "https://www.idealista.com/alquiler-viviendas/las-palmas-de-gran-canaria-las-palmas/con-publicado_ultimas-24-horas/?ordenado-por=fecha-publicacion-desc",
     "max_pages": 5,
-    "output_json_file": "items_idealista_job1.json",
+    "output_json_file": "items_idealista_las_palmas.json",
     "destinataries": [
         {
             "name": "Joe Blogs",
-            "email": "example1@gmail.com",
+            "email": "<example1>@gmail.com",
             "filters": {
                 "price": "< 601",
                 "m2": "> 40",
@@ -15,7 +15,7 @@
         },
         {
             "name": "Joe's friend",
-            "email": "example2@gmail.com",
+            "email": "<example2>@gmail.com",
             "filters": {
                 "price": "< 601",
                 "m2": "> 30"
@@ -23,14 +23,14 @@
         }
     ]
 }, {
-    "name": "Idealista JOB 2",
-    "init_url": "https://www.idealista.com/alquiler-viviendas/aguimes-las-palmas/?ordenado-por=fecha-publicacion-desc",
+    "name": "Idealista JOB Barcelona",
+    "init_url": "https://www.idealista.com/alquiler-viviendas/barcelona-barcelona/con-publicado_ultimas-24-horas/?ordenado-por=fecha-publicacion-desc",
     "max_pages": 5,
-    "output_json_file": "items_idealista_job2.json",
+    "output_json_file": "items_idealista_barcelona.json",
     "destinataries": [
         {
             "name": "John Smith",
-            "email": "example3@gmail.com",
+            "email": "<example3>@gmail.com",
             "filters": {
                 "price": "< 601",
                 "m2": "> 40",
