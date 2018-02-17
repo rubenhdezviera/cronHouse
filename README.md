@@ -1,3 +1,6 @@
+# Requirements
+    [npm](https://www.npmjs.com/) and [NodeJS](https://nodejs.org/en/) (Install both [here](https://nodejs.org/en/download/))
+
 # Get the repo
     git clone https://github.com/yeikiu/cronIdealista.git
     cd cronIdealista
