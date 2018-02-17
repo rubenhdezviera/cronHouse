@@ -7,7 +7,7 @@ var fs = require('fs');
 
 /* CONFIG FILES */
 var EMAIL_CONFIG_FILE = './config_email.json';
-var FILE_CONFIG_JOBS = './config_jobs.json'; // File holding array of jobs
+var FILE_CONFIG_JOBS = './config_jobs.json'; // File holding an array of jobs
 /* /CONFIG FILES */
 
 /* GLOBAL VARS */
@@ -24,7 +24,7 @@ var transporter = nodemailer.createTransport({
 /* /GLOBAL VARS */
 
 //Run each 4 minutes
-new CronJob('0 */2 * * * *', function () {
+new CronJob('0 */4 * * * *', function () {
 
   CONFIG_JOBS.forEach(function(JOB) {
     console.log('\n\n' + JOB.name + ': Started scrapping @ ' + new Date());
