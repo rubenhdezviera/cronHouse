@@ -72,8 +72,15 @@ function scrapIdealista(JOB) {
       }).text();
       item['m2'] = item['m2'] != '' ? parseInt(item['m2'].substr(0, item['m2'].indexOf(' '))) : 0;
       item['date_added'] = new Date().getTime();
+      var pictures = [];
+       $(this).find('img').each(function(i,e) {
+        var possible_img = $(e).attr('data-ondemand-img');
+        if(possible_img.indexOf('WEB_LISTING') > -1)
+          pictures.push( possible_img );
+      });
+      item['pictures'] = pictures;
 
-      if (!items[item['id_idealista']] && item['price'] > 0 /* && item['price'] < 500 */) {
+      if (!items[item['id_idealista']] && item['price'] > 0) {
         items[item['id_idealista']] = item;
         JOB.new_items.push(item);
         //console.log('Added: ' + JSON.stringify(item));
@@ -118,7 +125,11 @@ function scrapIdealista(JOB) {
             subject: JOB.name + ' - ' + item.price + ' €/mes | ' + item.title,
             html: loadEmailTemplate(item)
           }, function (err, info) {
-            if (err) { console.log(err); }
+            if (err) { 
+              console.log(err); 
+            } else {
+              console.log('\n' + JOB.name + ': Mail sent to ' + destinataries.toString()); 
+            }
           });
         }
       });
@@ -131,7 +142,15 @@ function loadEmailTemplate(item) {
   var template = fs.readFileSync(EMAIL_TEMPLATE_FILE, "utf8");
   for (var property in item) {
     if (item.hasOwnProperty(property)) {
-      template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), item[property]);
+      if(property == "pictures") {
+        var pictures_html = "";
+        item.pictures.forEach(function(picture){
+          var detail_img = picture.replace('WEB_LISTING', 'WEB_DETAIL-L-L');
+          pictures_html += '<tr><td style="vertical-align: top;"><a target="_blank" href="'+detail_img+'"><img style="margin: 0; Margin-bottom: 15px;" src="'+picture+'"/></a></td></tr>';
+        });
+        template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), pictures_html);
+      } else 
+        template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), item[property]);
     }
   }
   return template;
