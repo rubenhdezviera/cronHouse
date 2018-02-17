@@ -7,14 +7,14 @@ var fs = require('fs');
 
 /* CONFIG FILES */
 var EMAIL_CONFIG_FILE = './config_email.json';
-var FILE_CONFIG_JOBS = './config_jobs.json'; // File holding an array of jobs
+var JOBS_CONFIG_FILE = './config_jobs.json'; // File holding an array of jobs
 /* /CONFIG FILES */
 
 /* GLOBAL VARS */
 var IDEALISTA_BASE_URL = 'https://www.idealista.com';
 var EMAIL_CONFIG = jsonfile.readFileSync(EMAIL_CONFIG_FILE);
-var FILE_EMAIL_TEMPLATE = 'email_template.html';
-var CONFIG_JOBS = jsonfile.readFileSync(FILE_CONFIG_JOBS);
+var EMAIL_TEMPLATE_FILE = 'email_template.html';
+var JOBS_CONFIG = jsonfile.readFileSync(JOBS_CONFIG_FILE);
 var CHROME_UA = { 'User-Agent': 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36' };
 
 var transporter = nodemailer.createTransport({
@@ -26,7 +26,7 @@ var transporter = nodemailer.createTransport({
 //Run each 4 minutes
 new CronJob('0 */4 * * * *', function () {
 
-  CONFIG_JOBS.forEach(function(JOB) {
+  JOBS_CONFIG.forEach(function(JOB) {
     console.log('\n\n' + JOB.name + ': Started scrapping @ ' + new Date());
     JOB['first_run'] = false;
     JOB['num_pages'] = 0;
@@ -128,7 +128,7 @@ function scrapIdealista(JOB) {
 }
 
 function loadEmailTemplate(item) {
-  var template = fs.readFileSync(FILE_EMAIL_TEMPLATE, "utf8");
+  var template = fs.readFileSync(EMAIL_TEMPLATE_FILE, "utf8");
   for (var property in item) {
     if (item.hasOwnProperty(property)) {
       template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), item[property]);
