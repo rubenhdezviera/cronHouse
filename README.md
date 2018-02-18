@@ -1,5 +1,5 @@
 # About and motivation
-Finding a good home to rent in some cities has become more and more complex. Nowadays we have more and more sites publishing houses, but their alerts services are either not inmediate or simply not accurate.
+Finding a good home to rent in some cities has become a really complex task. Nowadays we have more and more sites publishing houses, but their alerts services are either not inmediate or simply not accurate.
 This is a very simple NodeJS recurrent task wich will keep track of every new flat added to an Idealista URL and email you an alert if it passes your filter.
 
 The goal is to be the first doing the call and visiting your dream home! ;)
