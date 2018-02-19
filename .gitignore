@@ -1,6 +1,7 @@
 *.prod.json
 *.dev.json
 items_*.json
+.eslintrc.json
 # Created by https://www.gitignore.io/api/node
 
 ### Node ###
