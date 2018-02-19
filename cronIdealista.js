@@ -109,10 +109,21 @@ function scrapIdealista(JOB) {
           for (var property in filters) {
             if (filters.hasOwnProperty(property)) {
               if (passes) {
-                passes = eval(item[property] + filters[property]);
+                /* if(property == 'whitelist') {
+                  var normalized_description = item.description.toLowerCase();
+                  passes = filters.whitelist.some(function(word) {
+                    return normalized_description.indexOf(word.toLowerCase().trim()) > -1;
+                  });
+                } else if(property == 'blacklist') {
+                  var normalized_description = item.description.toLowerCase();
+                  passes = filters.blacklist.every(function(word) {
+                    return normalized_description.indexOf(word.toLowerCase().trim()) == -1;
+                  });
+                } else */
+                  passes = eval(item[property] + filters[property]);
               }
             }
-          }
+          }          
           if (passes) {
             destinataries.push(user.email);
           }
