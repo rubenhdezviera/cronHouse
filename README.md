@@ -15,7 +15,7 @@ The goal is to be the first doing the call and visiting your dream home! ;)
     npm install
 
 # Customize your config files
-Before sending your email using gmail you have to allow non secure apps to access gmail you can do this by going to your gmail settings here.
+Before sending your email using gmail you have to allow non secure apps to access gmail you can do this by going to your gmail settings [here](https://myaccount.google.com/lesssecureapps).
 ## config_email.json
     {
         "mail": {
