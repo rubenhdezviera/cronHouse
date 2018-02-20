@@ -72,6 +72,13 @@ function scrapIdealista(JOB) {
       }).text();
       item['m2'] = item['m2'] != '' ? parseInt(item['m2'].substr(0, item['m2'].indexOf(' '))) : 0;
       item['date_added'] = new Date().getTime();
+
+      $(this).find('.item-toolbar-contact').each(function(index,e) {
+        var phoneData = $(e).find('.item-clickable-phone');
+        item['phone'] = $(phoneData).attr('href') == undefined ? '' : $(phoneData).attr('href').replace('tel:', '').trim();
+        item['real_estate'] = $(phoneData).attr('data-xiti-page') == undefined ? true : $(phoneData).attr('data-xiti-page').indexOf('particular') == -1;
+      });
+
       var pictures = [];
        $(this).find('img').each(function(i,e) {
         var possible_img = $(e).attr('data-ondemand-img');
@@ -109,18 +116,11 @@ function scrapIdealista(JOB) {
           for (var property in filters) {
             if (filters.hasOwnProperty(property)) {
               if (passes) {
-                /* if(property == 'whitelist') {
-                  var normalized_description = item.description.toLowerCase();
-                  passes = filters.whitelist.some(function(word) {
-                    return normalized_description.indexOf(word.toLowerCase().trim()) > -1;
-                  });
-                } else if(property == 'blacklist') {
-                  var normalized_description = item.description.toLowerCase();
-                  passes = filters.blacklist.every(function(word) {
-                    return normalized_description.indexOf(word.toLowerCase().trim()) == -1;
-                  });
-                } else */
+                if(property == 'real_estate') {
+                  passes = item.real_estate === filters.real_estate;
+                } else {
                   passes = eval(item[property] + filters[property]);
+                }
               }
             }
           }          
@@ -160,6 +160,21 @@ function loadEmailTemplate(item) {
           pictures_html += '<tr><td style="vertical-align: top;"><a target="_blank" href="'+detail_img+'"><img style="margin: 0; Margin-bottom: 15px;" src="'+picture+'"/></a></td></tr>';
         });
         template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), pictures_html);
+
+      } else if(property == "real_estate") {
+        if(item.real_estate)
+          template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), '');
+        else
+          template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), '¡DE PARTICULAR!');
+
+      } else if(property == "phone") {
+        if(item.phone == '')
+          template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), '');
+        else {
+          var phoneButton = '<br /><tr><td style="font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;"><a href="tel:'+item.phone+'" target="_blank" style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;">LLAMAR</a></td></tr>'
+          template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), phoneButton);
+        }
+
       } else 
         template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), item[property]);
     }

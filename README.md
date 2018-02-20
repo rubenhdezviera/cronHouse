@@ -41,7 +41,8 @@ I'm using Gmail as a provider since it was extremly easy to configure my account
                 "filters": {
                     "price": "< 601",
                     "m2": "> 40",
-                    "num_rooms": "> 1"
+                    "num_rooms": "> 1",
+                    "real_estate": false
                 }
             },
             {
@@ -65,7 +66,8 @@ I'm using Gmail as a provider since it was extremly easy to configure my account
                 "filters": {
                     "price": "< 601",
                     "m2": "> 40",
-                    "num_rooms": "> 1"
+                    "num_rooms": "> 1",
+                    "real_estate": true
                 }
             }
         ]
@@ -80,7 +82,7 @@ This file is an array of Jobs to be iterated by the cron on each execution. Each
 | **max_pages** | Limit the number of pages to be visited. Don't be greedy ;) |
 | **output_json_file** | This file will be generated with all the flats scrapped during the job. The first time the job runs it won't notify the configured destinataries since we are looking for fresh additions. After the second run, when it detects a new flat to insert in the file, it will notify those destinataries matching their filters criteria. |
 | **destinataries** | Here you can set any number of destinataries interested in the alerts generated. Each destinatary has a **name** and an **email** field. The **filters** field must exist but it's not mandatory to fill it with any data. |
-| **destinatary filters** | At the moment you can only use numeric comparison expressions for the following fields: **price**, **m2** and **num_rooms**. |
+| **destinatary filters** | At the moment you can only use numeric comparison expressions for the following fields: **price**, **m2** and **num_rooms**. The **real_estate** field must be a boolean value. |
 
 # Enjoy scrapping!
     node cronIdealista
