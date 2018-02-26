@@ -9,7 +9,7 @@ The goal is to be the first doing the call and visiting your dream home! ;)
 
 # Get the repo
     git clone https://github.com/yeikiu/cronHouse.git
-    cd cronIdealista
+    cd cronHouse
 
 # Install dependencies
     npm install
