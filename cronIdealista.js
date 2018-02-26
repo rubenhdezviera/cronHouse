@@ -15,7 +15,6 @@ var JOBS_CONFIG_FILE = './config_jobs.json'; // File holding an array of jobs
 /* /CONFIG FILES */
 
 /* GLOBAL VARS */
-var IDEALISTA_BASE_URL = 'https://www.idealista.com';
 var EMAIL_CONFIG = jsonfile.readFileSync(EMAIL_CONFIG_FILE);
 var JOBS_CONFIG = jsonfile.readFileSync(JOBS_CONFIG_FILE);
 var CHROME_UA = { 'User-Agent': 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36' };
