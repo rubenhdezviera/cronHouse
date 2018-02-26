@@ -10,8 +10,8 @@ var inmoScrapper = require('./modules/inmo-scrapper.js');
 var emailTemplate = require('./modules/email-template.js');
 
 /* CONFIG FILES */
-var EMAIL_CONFIG_FILE = './config_email.prod.json';
-var JOBS_CONFIG_FILE = './config_jobs.prod.json'; // File holding an array of jobs
+var EMAIL_CONFIG_FILE = './config_email.json';
+var JOBS_CONFIG_FILE = './config_jobs.json'; // File holding an array of jobs
 /* /CONFIG FILES */
 
 /* GLOBAL VARS */
