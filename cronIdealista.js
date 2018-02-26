@@ -5,15 +5,18 @@ var cheerio = require('cheerio'); //HTML jQuery-like DOM parser
 var nodemailer = require('nodemailer');
 var fs = require('fs');
 
+//custom modules
+var inmoScrapper = require('./modules/inmo-scrapper.js');
+var emailTemplate = require('./modules/email-template.js');
+
 /* CONFIG FILES */
-var EMAIL_CONFIG_FILE = './config_email.json';
-var JOBS_CONFIG_FILE = './config_jobs.json'; // File holding an array of jobs
+var EMAIL_CONFIG_FILE = './config_email.prod.json';
+var JOBS_CONFIG_FILE = './config_jobs.prod.json'; // File holding an array of jobs
 /* /CONFIG FILES */
 
 /* GLOBAL VARS */
 var IDEALISTA_BASE_URL = 'https://www.idealista.com';
 var EMAIL_CONFIG = jsonfile.readFileSync(EMAIL_CONFIG_FILE);
-var EMAIL_TEMPLATE_FILE = 'email_template.html';
 var JOBS_CONFIG = jsonfile.readFileSync(JOBS_CONFIG_FILE);
 var CHROME_UA = { 'User-Agent': 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36' };
 
@@ -38,12 +41,12 @@ new CronJob('0 */4 * * * *', function () {
       },
       headers: CHROME_UA
     };
-    scrapIdealista(JOB);
+    scrapIt(JOB);
   });
 
 }, null, true, 'Atlantic/Canary');
 
-function scrapIdealista(JOB) {
+function scrapIt(JOB) {
   request(JOB.request_options).then(function ($) {
     var items;
     try {
@@ -54,55 +57,34 @@ function scrapIdealista(JOB) {
       JOB.first_run = true;
     }
 
-    $('article').each(function (i) {
-      var item = {};
-      item['id_idealista'] = $(this).children('.item').attr('data-adid');
-      item['title'] = $(this).find('.item-link').text();
-      item['link'] = IDEALISTA_BASE_URL + $(this).find('.item-link').attr('href');
-      item['price'] = $(this).find('.item-price').text();
-      item['price'] = item['price'].substr(0, item['price'].search('€/mes')).replace('.', '');
-      item['price'] = item['price'] != '' ? parseInt(item['price']) : 0;
-      item['description'] = $(this).find('.item-description').text();
-      item['num_rooms'] = $(this).find('.item-detail').filter(function () {
-        return $(this).html().search('<small>hab.</small>') > -1;
-      }).text().substr(0, 1);
-      item['num_rooms'] = item['num_rooms'] != '' ? parseInt(item['num_rooms']) : 0;
-      item['m2'] = $(this).find('.item-detail').filter(function () {
-        return $(this).html().search('<small>m&#xB2;</small>') > -1;
-      }).text();
-      item['m2'] = item['m2'] != '' ? parseInt(item['m2'].substr(0, item['m2'].indexOf(' '))) : 0;
-      item['date_added'] = new Date().getTime();
-
-      $(this).find('.item-toolbar-contact').each(function(index,e) {
-        var phoneData = $(e).find('.item-clickable-phone');
-        item['phone'] = $(phoneData).attr('href') == undefined ? '' : $(phoneData).attr('href').replace('tel:', '').trim();
-        item['real_estate'] = $(phoneData).attr('data-xiti-page') == undefined ? true : $(phoneData).attr('data-xiti-page').indexOf('particular') == -1;
-      });
-
-      var pictures = [];
-       $(this).find('img').each(function(i,e) {
-        var possible_img = $(e).attr('data-ondemand-img');
-        if(possible_img.indexOf('WEB_LISTING') > -1)
-          pictures.push( possible_img );
-      });
-      item['pictures'] = pictures;
-
-      if (!items[item['id_idealista']] && item['price'] > 0) {
-        items[item['id_idealista']] = item;
+    var scrapResult = {
+      new_items:[],
+      next_url: ''
+    };
+    switch (JOB.source) {
+      case 'Fotocasa':
+        var json_props = $.html().match(/<script>window\.__INITIAL_PROPS__=(\{.*?\})<\/script><script>window\.i18n/);
+        //fs.writeFileSync('./dev/test.json', json_props[1]);
+        var props = JSON.parse(json_props[1]);
+        scrapResult = inmoScrapper.scrapFotocasa($, props.initialSearch.result.realEstates);
+        break;
+      case 'Idealista':
+        scrapResult = inmoScrapper.scrapIdealista($);
+        break;
+    } 
+    scrapResult.new_items.forEach(function(item){
+      if (!items[item['id']]) {
+        items[item['id']] = item;
         JOB.new_items.push(item);
-        //console.log('Added: ' + JSON.stringify(item));
       }
     });
 
     jsonfile.writeFileSync(JOB.output_json_file, items);
-
-    var next_url = $('.icon-arrow-right-after').attr('href');
-    next_url = next_url != undefined ? IDEALISTA_BASE_URL + next_url : '';
     JOB.num_pages++;
 
-    if (next_url != '' && JOB.num_pages < JOB.max_pages) {
-      JOB.request_options.url = next_url;
-      scrapIdealista(JOB);
+    if (scrapResult.next_url != '' && JOB.num_pages < JOB.max_pages) {
+      JOB.request_options.url = scrapResult.next_url;
+      scrapIt(JOB);
 
     } else {
       var total_items = Object.keys(items).length;
@@ -134,7 +116,7 @@ function scrapIdealista(JOB) {
             from: EMAIL_CONFIG.mail.auth.user,
             to: destinataries.toString(),
             subject: JOB.name + ' - ' + item.price + ' €/mes | ' + item.title,
-            html: loadEmailTemplate(item)
+            html: emailTemplate.loadEmailTemplate(item)
           }, function (err, info) {
             if (err) { 
               console.log(err); 
@@ -145,39 +127,6 @@ function scrapIdealista(JOB) {
         }
       });
       console.log('\n' + JOB.name + ': Done scrapping @ ' + new Date() + '\nScrapped pages: ' + JOB.num_pages + '\nTotal Items Added: ' + total_new_items + '\nTotal Items: ' + total_items);
-    }
+    } 
   });  
-}
-
-function loadEmailTemplate(item) {
-  var template = fs.readFileSync(EMAIL_TEMPLATE_FILE, "utf8");
-  for (var property in item) {
-    if (item.hasOwnProperty(property)) {
-      if(property == "pictures") {
-        var pictures_html = "";
-        item.pictures.forEach(function(picture){
-          var detail_img = picture.replace('WEB_LISTING', 'WEB_DETAIL-L-L');
-          pictures_html += '<tr><td style="vertical-align: top;"><a target="_blank" href="'+detail_img+'"><img style="margin: 0; Margin-bottom: 15px;" src="'+picture+'"/></a></td></tr>';
-        });
-        template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), pictures_html);
-
-      } else if(property == "real_estate") {
-        if(item.real_estate)
-          template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), '');
-        else
-          template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), '¡DE PARTICULAR!');
-
-      } else if(property == "phone") {
-        if(item.phone == '')
-          template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), '');
-        else {
-          var phoneButton = '<br /><tr><td style="font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;"><a href="tel:'+item.phone+'" target="_blank" style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;">LLAMAR</a></td></tr>'
-          template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), phoneButton);
-        }
-
-      } else 
-        template = template.replace(new RegExp('\{\{' + property + '\}\}', 'g'), item[property]);
-    }
-  }
-  return template;
 };
