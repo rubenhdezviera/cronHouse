@@ -64,8 +64,8 @@ function scrapIt(JOB) {
     switch (JOB.source) {
       case 'Fotocasa':
         var json_props = $.html().match(/<script>window\.__INITIAL_PROPS__=(\{.*?\})<\/script><script>window\.i18n/);
-        //fs.writeFileSync('./dev/test.json', json_props[1]);
         var props = JSON.parse(json_props[1]);
+        //jsonfile.writeFileSync('./dev/test_'+JOB.name+'.json', props.initialSearch.result.realEstates);
         scrapResult = inmoScrapper.scrapFotocasa($, props.initialSearch.result.realEstates);
         break;
       case 'Idealista':
