@@ -1,5 +1,6 @@
 [{
     "name": "Idealista JOB Las Palmas",
+    "source": "Idealista",
     "init_url": "https://www.idealista.com/alquiler-viviendas/las-palmas-de-gran-canaria-las-palmas/con-publicado_ultimas-24-horas/?ordenado-por=fecha-publicacion-desc",
     "max_pages": 5,
     "output_json_file": "items_idealista_las_palmas.json",
@@ -23,7 +24,33 @@
         }
     ]
 }, {
+    "name": "Fotocasa JOB Las Palmas",
+    "source": "Fotocasa",
+    "init_url": "https://www.fotocasa.es/es/alquiler/casas/las-palmas-de-gran-canaria/todas-las-zonas/l?sortType=publicationDate&gridType=3",
+    "max_pages": 5,
+    "output_json_file": "items_fotocasa_las_palmas.json",
+    "destinataries": [
+        {
+            "name": "Joe Blogs",
+            "email": "<example1>@gmail.com",
+            "filters": {
+                "price": "< 601",
+                "m2": "> 40",
+                "num_rooms": "> 1"
+            }
+        },
+        {
+            "name": "Joe's friend",
+            "email": "<example2>@gmail.com",
+            "filters": {
+                "price": "< 601",
+                "m2": "> 30"
+            }
+        }
+    ]
+}, {
     "name": "Idealista JOB Barcelona",
+    "source": "Idealista",
     "init_url": "https://www.idealista.com/alquiler-viviendas/barcelona-barcelona/con-publicado_ultimas-24-horas/?ordenado-por=fecha-publicacion-desc",
     "max_pages": 5,
     "output_json_file": "items_idealista_barcelona.json",
